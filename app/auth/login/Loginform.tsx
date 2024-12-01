@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React from "react";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
@@ -6,7 +6,8 @@ import { Input } from "@nextui-org/input";
 import { GiPadlock } from "react-icons/gi";
 import { Button } from "@nextui-org/button";
 import { useForm } from "react-hook-form";
-import {zodResolver} from '@hookform/resolvers/zod'
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { loginSchema, LoginSchema } from "@/lib/schemas/loginschema";
 
 export default function Loginform() {
@@ -15,9 +16,10 @@ export default function Loginform() {
     handleSubmit,
     formState: { isValid, errors },
   } = useForm<LoginSchema>({
-    resolver : zodResolver(loginSchema)
+    resolver: zodResolver(loginSchema),
+    mode : 'onTouched'
   });
-  const onsubmit = (data: any) => {
+  const onsubmit = (data: LoginSchema) => {
     console.log(data);
   };
 
@@ -29,7 +31,7 @@ export default function Loginform() {
             <GiPadlock size={30} />
             <h1 className="text-xl font-semibold">Login</h1>
           </div>
-          <p className="text-xl font-semibold mx-auto">Welcome to Chitchat!</p>
+          <p className="text-xl font-semibold mx-auto">Welcome back to Chitchat!</p>
         </div>
       </CardHeader>
       <CardBody>
@@ -39,16 +41,20 @@ export default function Loginform() {
               defaultValue=""
               label="Email"
               variant="bordered"
-              {...register("email", { required: true })}
+              {...register("email")}
+              errorMessage = {errors.email?.message as string}
+              isInvalid = {!!errors.email}
             />
             <Input
               defaultValue=""
               label="Password"
               type="password"
               variant="bordered"
-              {...register("password", { required: true })}
+              {...register("password")}
+              errorMessage = {errors.password?.message as string}
+              isInvalid = {!!errors.password}
             />
-            <Button fullWidth color="secondary" type="submit">
+            <Button fullWidth color="secondary" isDisabled={!isValid} type="submit">
               Log in
             </Button>
           </div>
