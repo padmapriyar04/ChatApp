@@ -1,8 +1,10 @@
+import {authhandler} from "@/auth";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import { FaRegSmile } from "react-icons/fa";
 
-export default function Home() {
+export default async function Home() {
+  const session = await authhandler.auth();
   return (
     <div>
       <h1>Hello World</h1>

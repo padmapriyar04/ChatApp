@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { GiPadlock } from "react-icons/gi";
 
 import { registerSchema, RegisterSchema } from "@/lib/schemas/registerschema";
+import { registerUser } from "@/app/actions/authactions";
 
 export default function Registerform() {
   const {
@@ -15,12 +16,13 @@ export default function Registerform() {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<RegisterSchema>({
-    resolver: zodResolver(registerSchema),
+    // resolver: zodResolver(registerSchema),
     mode: "onTouched",
   });
 
-  const onsubmit = (data:RegisterSchema)=>{
-    console.log(data);
+  const onsubmit = async (data:RegisterSchema)=>{
+    const result = await registerUser(data);
+    console.log(result);
   }
 
   return (
@@ -59,7 +61,13 @@ export default function Registerform() {
               errorMessage={errors.password?.message as string}
               isInvalid={!!errors.password}
             />
-            <Button fullWidth isDisabled={!isValid} type="submit" color="secondary" className="text-1xl">
+            <Button
+              fullWidth
+              isDisabled={!isValid}
+              type="submit"
+              color="secondary"
+              className="text-1xl"
+            >
               Register
             </Button>
           </div>
