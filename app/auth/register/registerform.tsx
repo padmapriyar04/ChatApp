@@ -6,6 +6,8 @@ import { Input } from "@nextui-org/input";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { GiPadlock } from "react-icons/gi";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 import { registerSchema, RegisterSchema } from "@/lib/schemas/registerschema";
 import { registerUser } from "@/app/actions/authactions";
@@ -14,16 +16,33 @@ export default function Registerform() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    setError,
+    formState: { errors, isValid, isSubmitting },
   } = useForm<RegisterSchema>({
-    // resolver: zodResolver(registerSchema),
+    resolver: zodResolver(registerSchema),
     mode: "onTouched",
   });
+  const router = useRouter();
 
-  const onsubmit = async (data:RegisterSchema)=>{
+  const onsubmit = async (data: RegisterSchema) => {
     const result = await registerUser(data);
-    console.log(result);
-  }
+
+    if (result.status === "success") {
+      toast.success("User registered successfully!");
+      router.push("/");
+    } else {
+      if (Array.isArray(result.error)) {
+        result.error.forEach((i) => {
+          const fieldname = i.path.join(".") as "name" | "email" | "password";
+
+          setError(fieldname, { message: i.message });
+        });
+      } else {
+        toast.error(result.error);
+        setError("root.serverError", { message: result.error });
+      }
+    }
+  };
 
   return (
     <Card className="mx-auto w-2/5">
@@ -55,18 +74,24 @@ export default function Registerform() {
             />
             <Input
               label="password"
-              variant="bordered"
               type="password"
+              variant="bordered"
               {...register("password")}
               errorMessage={errors.password?.message as string}
               isInvalid={!!errors.password}
             />
+            {errors?.root?.serverError && (
+              <p className="text-danger-50 text-sm">
+                {errors.root.serverError.message}
+              </p>
+            )}
             <Button
               fullWidth
-              isDisabled={!isValid}
-              type="submit"
-              color="secondary"
               className="text-1xl"
+              color="secondary"
+              isDisabled={!isValid}
+              isLoading={isSubmitting}
+              type="submit"
             >
               Register
             </Button>

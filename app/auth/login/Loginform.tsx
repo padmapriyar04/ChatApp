@@ -7,20 +7,31 @@ import { GiPadlock } from "react-icons/gi";
 import { Button } from "@nextui-org/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
 import { loginSchema, LoginSchema } from "@/lib/schemas/loginschema";
+import { signInUser } from "@/app/actions/authactions";
+import { toast } from "react-toastify";
 
 export default function Loginform() {
   const {
     register,
     handleSubmit,
-    formState: { isValid, errors },
+    formState: { isValid, errors, isSubmitting },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
-    mode : 'onTouched'
+    mode: "onTouched",
   });
-  const onsubmit = (data: LoginSchema) => {
-    console.log(data);
+  const router = useRouter();
+  const onsubmit = async (data: LoginSchema) => {
+    const res = await signInUser(data);
+
+    if (res.status === "success") {
+      router.push("/members");
+      toast.success("Login in successful");
+    } else {
+      toast.error(res.error as string);
+    }
   };
 
   return (
@@ -31,7 +42,9 @@ export default function Loginform() {
             <GiPadlock size={30} />
             <h1 className="text-xl font-semibold">Login</h1>
           </div>
-          <p className="text-xl font-semibold mx-auto">Welcome back to Chitchat!</p>
+          <p className="text-xl font-semibold mx-auto">
+            Welcome back to Chitchat!
+          </p>
         </div>
       </CardHeader>
       <CardBody>
@@ -42,8 +55,8 @@ export default function Loginform() {
               label="Email"
               variant="bordered"
               {...register("email")}
-              errorMessage = {errors.email?.message as string}
-              isInvalid = {!!errors.email}
+              errorMessage={errors.email?.message as string}
+              isInvalid={!!errors.email}
             />
             <Input
               defaultValue=""
@@ -51,10 +64,16 @@ export default function Loginform() {
               type="password"
               variant="bordered"
               {...register("password")}
-              errorMessage = {errors.password?.message as string}
-              isInvalid = {!!errors.password}
+              errorMessage={errors.password?.message as string}
+              isInvalid={!!errors.password}
             />
-            <Button fullWidth color="secondary" isDisabled={!isValid} type="submit">
+            <Button
+              fullWidth
+              color="secondary"
+              isDisabled={!isValid}
+              isLoading={isSubmitting}
+              type="submit"
+            >
               Log in
             </Button>
           </div>

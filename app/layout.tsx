@@ -1,5 +1,7 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { Providers } from "./providers";
 
@@ -34,6 +36,11 @@ export default function RootLayout({
       <head />
       <body>
         <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
+          <ToastContainer
+            hideProgressBar
+            className="z-50"
+            position="top-center"
+          />
           <TopNavbar />
           <main className="container mx-auto p-10">{children}</main>
         </Providers>
