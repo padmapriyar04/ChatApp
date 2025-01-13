@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
 import { loginSchema, LoginSchema } from "@/lib/schemas/loginschema";
-import { signInUser } from "@/app/actions/authactions";
+import { signInUser } from "@/actions/authactions";
 import { toast } from "react-toastify";
 
 export default function Loginform() {

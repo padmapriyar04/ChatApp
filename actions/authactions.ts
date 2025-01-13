@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { registerSchema, RegisterSchema } from "@/lib/schemas/registerschema";
 import { ActionResult } from "@/lib/types";
 import { LoginSchema } from "@/lib/schemas/loginschema";
-import { authhandler } from "@/auth";
+import { signIn,signOut } from "@/auth";
 
 export async function registerUser(
   data: RegisterSchema,
@@ -59,7 +59,7 @@ export async function signInUser(
   data: LoginSchema,
 ): Promise<ActionResult<string>> {
   try {
-    const result = await authhandler.signIn("credentials", {
+    const result = await signIn("credentials", {
       email: data.email,
       password: data.password,
       redirect: false,
@@ -84,4 +84,8 @@ export async function signInUser(
       return { status: "error", error: "Something went wrong" };
     }
   }
+}
+
+export async function signOutUser() {
+  await signOut({redirectTo: "/"});
 }

@@ -1,4 +1,4 @@
-"use client";
+
 
 import React from "react";
 import {
@@ -11,8 +11,11 @@ import { IoMdChatbubbles } from "react-icons/io";
 import Link from "next/link";
 import { Button } from "@nextui-org/button";
 import NavLink from "./NavLink";
+import { auth } from "@/auth";
+import UserMenu from "./UserMenu";
 
-export default function TopNavbar() {
+export default async function TopNavbar() {
+  const Session = await auth();
   return (
     <Navbar
       maxWidth="xl"
@@ -37,24 +40,32 @@ export default function TopNavbar() {
         <NavLink label="Lists" href="/lists" />
         <NavLink href="/messages" label="Messages" />
       </NavbarContent>
-      <NavbarContent justify="end">
-        <Button
-          variant="bordered"
-          className="text-white"
-          as={Link}
-          href="/auth/login"
-        >
-          Login
-        </Button>
-        <Button
-          variant="bordered"
-          className="text-white"
-          as={Link}
-          href="/auth/register"
-        >
-          Register
-        </Button>
-      </NavbarContent>
+      {Session?.user ? (
+        <NavbarContent justify="end">
+          <UserMenu user={Session.user} />
+        </NavbarContent>
+      ) : (
+        <>
+          <NavbarContent justify="end">
+            <Button
+              variant="bordered"
+              className="text-white"
+              as={Link}
+              href="/auth/login"
+            >
+              Login
+            </Button>
+            <Button
+              variant="bordered"
+              className="text-white"
+              as={Link}
+              href="/auth/register"
+            >
+              Register
+            </Button>
+          </NavbarContent>
+        </>
+      )}
     </Navbar>
   );
 }

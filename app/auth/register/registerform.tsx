@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 import { registerSchema, RegisterSchema } from "@/lib/schemas/registerschema";
-import { registerUser } from "@/app/actions/authactions";
+import { registerUser } from "@/actions/authactions";
 
 export default function Registerform() {
   const {
