@@ -1,5 +1,3 @@
-
-
 import React from "react";
 import {
   Navbar,
@@ -39,6 +37,7 @@ export default async function TopNavbar() {
         <NavLink href="/matches" label="Matches" />
         <NavLink label="Lists" href="/lists" />
         <NavLink href="/messages" label="Messages" />
+        <NavLink href="/members" label="Members" />
       </NavbarContent>
       {Session?.user ? (
         <NavbarContent justify="end">

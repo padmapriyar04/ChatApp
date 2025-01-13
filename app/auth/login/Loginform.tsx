@@ -28,6 +28,7 @@ export default function Loginform() {
 
     if (res.status === "success") {
       router.push("/members");
+      router.refresh();
       toast.success("Login in successful");
     } else {
       toast.error(res.error as string);
